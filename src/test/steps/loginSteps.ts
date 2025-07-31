@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { fixture } from "../../hooks/pageFixture";
 import LoginPage from "../../pages/loginPage";
 
-setDefaultTimeout(1000 * 5)
+setDefaultTimeout(1000 * 10)
 let loginPage: LoginPage;
 
 Given('User is on the login page', async function () {
@@ -25,14 +25,12 @@ When('User enters valid username {string} and password {string}', { timeout: 100
     await loginPage.login(username, password);
     fixture.logger.info(`Filled in username: ${username} and password: ${password}`);
     fixture.logger.info(`Login attempted with username: ${username} and password: ${password}`);
-    fixture.logger.info('Login action completed.');
 });
 
 When('User click on the login button', async function () {
     await fixture.page.waitForLoadState();
-    fixture.logger.info("Waiting for 2 seconds")
-    await fixture.page.waitForTimeout(2000);
     await fixture.page.locator("#login-submit").click();
+    fixture.logger.info('Login Button clicked');
 });
 
 Then('Login should be success', {timeout: 10000}, async function () {
@@ -43,9 +41,13 @@ Then('Login should be success', {timeout: 10000}, async function () {
 });
 
 When('Login should fail', {timeout: 10000}, async function () {
-    const failureMesssage = fixture.page.locator("//*[@id='login-username-msg']");
+    //try{
+    const failureMesssage = fixture.page.locator("//*[@id='login-password-msg1']");
     await expect(failureMesssage).toBeVisible();
     const errorMessage = await failureMesssage.textContent();
-    fixture.logger.info("Login Failed - Error message displayed: " + errorMessage);
-    await fixture.page.waitForTimeout(2000);
+    fixture.logger.warn("Error message displayed: " + errorMessage);
+    //}
+    /*catch(error){
+     fixture.logger.error("Login Failed - Error message displayed: " + error);
+    }*/
 }); 

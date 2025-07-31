@@ -14,7 +14,6 @@ BeforeAll(async function () {
     getEnv();
     browser = await invokeBrowser();
 });
-// It will trigger for not auth scenarios
 Before({ tags: "not @auth" }, async function ({ pickle }) {
     const scenarioName = pickle.name + pickle.id
     context = await browser.newContext({
@@ -33,8 +32,6 @@ Before({ tags: "not @auth" }, async function ({ pickle }) {
     fixture.logger = createLogger(options(scenarioName));
 });
 
-
-// It will trigger for auth scenarios
 Before({ tags: '@auth' }, async function ({ pickle }) {
     const scenarioName = pickle.name + pickle.id
     context = await browser.newContext({
