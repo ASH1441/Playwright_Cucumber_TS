@@ -19,7 +19,7 @@ Given('User click on the login link', async function () {
 
 });
 
-When('User enters valid username {string} and password {string}', { timeout: 10000 }, async function (username, password) {
+When('User enters valid username {string} and password {string}', {timeout: 10000}, async function (username, password) {
     fixture.logger.info(`Attempting login with username: ${username}`);
     loginPage = new LoginPage(fixture.page);
     await loginPage.login(username, password);
@@ -41,13 +41,14 @@ Then('Login should be success', {timeout: 10000}, async function () {
 });
 
 When('Login should fail', {timeout: 10000}, async function () {
-    //try{
     const failureMesssage = fixture.page.locator("//*[@id='login-password-msg1']");
     await expect(failureMesssage).toBeVisible();
     const errorMessage = await failureMesssage.textContent();
-    fixture.logger.warn("Error message displayed: " + errorMessage);
-    //}
-    /*catch(error){
+    try{
+    if(errorMessage)
+     fixture.logger.warn("Error message displayed: " + errorMessage);
+    }
+    catch(error){
      fixture.logger.error("Login Failed - Error message displayed: " + error);
-    }*/
+    }
 }); 

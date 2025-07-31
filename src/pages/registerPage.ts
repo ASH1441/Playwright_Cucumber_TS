@@ -2,7 +2,6 @@ import { expect, Page } from "@playwright/test";
 import PlaywrightWrapper from "../helper/wrapper/PlaywrightWrappers";
 
 export default class RegisterPage {
-
     private base: PlaywrightWrapper;
 
     constructor(private page: Page) {
@@ -10,53 +9,40 @@ export default class RegisterPage {
     }
 
     private Elements = {
-        fName: "input[formcontrolname='firstname']",
-        lname: "input[formcontrolname='lastname']",
-        userName: "input[formcontrolname='username']",
-        password: "input[formcontrolname='password']",
-        confirmPassword: "input[formcontrolname='confirmPassword']",
-        maleInput: "input[value='Male']",
-        femaleInput: "input[value='Female']",
-        maleRadioBtn: "//span[contains(text(),'Male')]",
-        femaleRadioBtn: "//span[contains(text(),'Female')]",
-        regBtn: "button[color='primary']"
+    registerLink: this.page.locator('#reglink'),
+    usernameInput: this.page.locator('#register-username'),
+    passwordInput: this.page.locator('#register-pw'),
+    repeatPasswordInput: this.page.locator('#register-pwrep'),
+    roleSelect: this.page.locator('#register-role'),
+    checkBox: this.page.locator('#register-check'),
+    registerButton: this.page.locator('[type="submit"]'),
+    confirmmessage: this.page.locator('//*[@id="overlaysubmit"]/h2')
     }
 
     async navigateToRegisterPage() {
-        await this.base.goto("https://bookcart.azurewebsites.net/register")
+        await this.base.goto("http://10.40.226.38/Coffeeshop/register.php")
     }
 
-
-    async registerUser(firstname: string, lastname: string, userName: string,
-        password: string, confirmPassword: string,
-        gender: string) {
-        await this.page.type(this.Elements.fName, firstname);
-        await this.page.type(this.Elements.lname, lastname);
-        // this must be unique always
-        await this.enterUsername(userName);
-        await this.page.type(this.Elements.password, password);
-        await this.page.type(this.Elements.confirmPassword, confirmPassword);
-        if (gender == "m") {
-            await this.page.click(this.Elements.maleRadioBtn);
-            await expect(this.page.locator(this.Elements.maleInput)).toBeChecked();
-        } else {
-            await this.page.click(this.Elements.femaleRadioBtn);
-            await expect(this.page.locator(this.Elements.femaleInput)).toBeChecked();
-        }
-        const regBtn = this.page.locator(this.Elements.regBtn);
-        await regBtn.click();
+    async fillForm(usernameInput: string, passwordInput: string, repeatPasswordInput: string) {
+    try {
+        await this.page.locator("//*[@id='register-username']").fill(usernameInput);
+        await this.page.locator("//*[@id='register-pw']").fill(passwordInput); 
+        await this.page.locator("//*[@id='register-pwrep']").fill(repeatPasswordInput);
+        await this.page.locator("//*[@id='register-check']").check();
+        await this.registerButtonClick();
+    }catch(error)
+    {
+     throw error;
+    }
     }
 
-    async enterUsername(userName: string) {
-        await this.page.type(this.Elements.userName, userName);
-        const [response] = await Promise.all([
-            this.page.waitForResponse(res => {
-                return res.status() == 200
-                    &&
-                    res.url() == `https://bookcart.azurewebsites.net/api/user/validateUserName/${userName}`
-            })
-        ]);
-        await response.finished();
+    async registerButtonClick() {
+          await this.page.locator("//*[@type=submit]").click();
     }
+
+    async confirmMessage() {
+        await this.page.locator("//*[@id='overlaysubmit']/h2").isVisible();
+    }
+
 }
 
