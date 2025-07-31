@@ -23,7 +23,7 @@
   ],
   "origins": [
     {
-      "origin": "https://bookcart.azurewebsites.net",
+      "origin": "http://10.40.226.38/Coffeeshop/index.php",
       "localStorage": [
         {
           "name": "authToken",

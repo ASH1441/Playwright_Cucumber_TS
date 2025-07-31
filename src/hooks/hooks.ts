@@ -55,24 +55,18 @@ Before({ tags: '@auth' }, async function ({ pickle }) {
 });
 
 After(async function ({ pickle, result }) {
-    let videoPath: string;
     let img: Buffer;
     const path = `./test-results/trace/${pickle.id}.zip`;
-    if (result?.status == Status.PASSED) {
+    if (result?.status != Status.PASSED) {
         img = await fixture.page.screenshot(
             { path: `./test-results/screenshots/${pickle.name}.png`, type: "png" })
-        videoPath = await fixture.page.video().path();
     }
     await context.tracing.stop({ path: path });
     await fixture.page.close();
     await context.close();
-    if (result?.status == Status.PASSED) {
+    if (result?.status != Status.PASSED) {
         await this.attach(
             img, "image/png"
-        );
-        await this.attach(
-            fs.readFileSync(videoPath),
-            'video/webm'
         );
         const traceFileLink = `<a href="https://trace.playwright.dev/">Open ${path}</a>`
         await this.attach(`Trace file: ${traceFileLink}`, 'text/html');

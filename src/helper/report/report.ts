@@ -4,24 +4,24 @@ report.generate({
     jsonDir: "test-results",
     reportPath: "test-results/reports/",
     reportName: "Playwright Automation Report",
-    pageTitle: "BookCart App test report",
+    pageTitle: "Coffeeshop App Test Report",
     displayDuration: false,
     metadata: {
         browser: {
             name: "chrome",
-            version: "112",
+            version: "132.0.1",
         },
-        device: "Koushik - PC",
+        device: "Sogeti - PC",
         platform: {
             name: "Windows",
-            version: "10",
+            version: "11",
         },
     },
     customData: {
         title: "Test Info",
         data: [
-            { label: "Project", value: "Book Cart Application" },
-            { label: "Release", value: "1.2.3" },
+            { label: "Project", value: "Coffeeshop Application" },
+            { label: "Release", value: "1.1.1" },
             { label: "Cycle", value: "Smoke-1" }
         ],
     },

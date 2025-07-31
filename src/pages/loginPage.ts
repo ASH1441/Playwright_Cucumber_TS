@@ -1,6 +1,9 @@
 import { expect, Page } from "@playwright/test";
 import PlaywrightWrapper from "../helper/wrapper/PlaywrightWrappers";
 
+/**
+ * Represents the login page of the application.
+ */
 
 export default class LoginPage {
     private base: PlaywrightWrapper
@@ -9,36 +12,30 @@ export default class LoginPage {
     }
 
     private Elements = {
-        userInput: "Username",
+        usernameInput: "Username",
         passwordInput: "Password",
-        loginBtn: "button[color='primary']",
+        loginBtn: "button:has-text('Login')",
         errorMessage: "alert"
     }
 
     async navigateToLoginPage() {
         await this.base.goto("/login");
-        await expect(this.page).toHaveTitle("BookCart");
-    }
-    async enterUserName(user: string) {
-        await this.page.getByLabel(this.Elements.userInput).fill(user);
-    }
-    async enterPassword(Password: string) {
-        await this.page.getByLabel(this.Elements.passwordInput).fill(Password);
+        await expect(this.page).toHaveTitle("coffee");
     }
 
-    async clickLoginButton() {
-        await this.base.waitAndClick(this.Elements.loginBtn);
+  
+    async login(username: string, password: string) {
+    try {
+     await this.page.locator("#login-username").fill(username);
+    } catch (error) {
+      throw error;
     }
-
-    getErrorMessage() {
-        return this.page.getByRole("alert");
+    
+    try {
+     await this.page.locator("#login-password").fill(password); 
+    } catch (error) {
+      throw error;
     }
-
-    async loginUser(user: string, password: string) {
-        await this.enterUserName(user);
-        await this.enterPassword(password);
-        await this.clickLoginButton();
     }
-
-
-}
+}   
+    
