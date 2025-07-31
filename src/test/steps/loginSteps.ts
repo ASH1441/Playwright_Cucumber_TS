@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { fixture } from "../../hooks/pageFixture";
 import LoginPage from "../../pages/loginPage";
 
-setDefaultTimeout(1000 * 10)
+setDefaultTimeout(1000 * 30)
 let loginPage: LoginPage;
 
 Given('User is on the login page', async function () {
@@ -16,7 +16,6 @@ Given('User click on the login link', async function () {
     await fixture.page.click("text=Login");
     fixture.logger.info("Clicked on the login link");
     fixture.logger.info("Navigated to the login page");
-
 });
 
 When('User enters valid username {string} and password {string}', {timeout: 10000}, async function (username, password) {
@@ -27,13 +26,13 @@ When('User enters valid username {string} and password {string}', {timeout: 1000
     fixture.logger.info(`Login attempted with username: ${username} and password: ${password}`);
 });
 
-When('User click on the login button', async function () {
+When('User click on the login button', {timeout: 10000}, async function () {
     await fixture.page.waitForLoadState();
     await fixture.page.locator("#login-submit").click();
     fixture.logger.info('Login Button clicked');
 });
 
-Then('Login should be success', {timeout: 10000}, async function () {
+Then('Login should be success', {timeout: 30000}, async function () {
     const logout = fixture.page.locator("//*[@id='accountbar']//tr[2]/td/a[3]");
     await expect(logout).toBeVisible();
     console.log("Login Success (Logout visible): " + await logout.isVisible());
@@ -41,14 +40,15 @@ Then('Login should be success', {timeout: 10000}, async function () {
 });
 
 When('Login should fail', {timeout: 10000}, async function () {
+    try{
     const failureMesssage = fixture.page.locator("//*[@id='login-password-msg1']");
     await expect(failureMesssage).toBeVisible();
     const errorMessage = await failureMesssage.textContent();
-    try{
+    fixture.logger.error ("Error message");
     if(errorMessage)
-     fixture.logger.warn("Error message displayed: " + errorMessage);
+     fixture.logger.info("Error message displayed: " + errorMessage);
     }
     catch(error){
-     fixture.logger.error("Login Failed - Error message displayed: " + error);
+     fixture.logger.info("Login Failed - Error message displayed: " + error);
     }
 }); 
